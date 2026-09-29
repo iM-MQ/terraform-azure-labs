@@ -2,6 +2,8 @@
 
 Hands-on labs learning **Terraform** by building real **Azure** infrastructure as code, using the `azurerm` provider. Each lab builds on the previous one and is deployed, tested and destroyed in my own Azure subscription.
 
+**Requires:** an Azure subscription, Terraform and the Azure CLI. See [Prerequisites](#prerequisites) for install steps.
+
 | Lab | Topic | Status |
 |---|---|---|
 | [01](lab-01-resource-group) | Resource group and the Terraform workflow (init, plan, apply, destroy, drift) | Complete ✅ |
@@ -9,6 +11,13 @@ Hands-on labs learning **Terraform** by building real **Azure** infrastructure a
 | 03 | Variables, outputs and reusable modules | Planned ⏳ |
 | 04 | Remote state in Azure Storage | Planned ⏳ |
 | 05 | Capstone: deploy the [IT Asset Register](https://github.com/iM-MQ/docker-asset-register) to Azure | Planned ⏳ |
+
+## Practices followed
+- State files and variable files are never committed (see `.gitignore`)
+- No subscription IDs or secrets in code; credentials come from the Azure CLI session
+- Provider versions pinned for repeatable builds
+- Every change reviewed with `terraform plan` before `apply`
+- All lab resources destroyed after use to control cost
 
 ## Prerequisites
 
@@ -66,10 +75,3 @@ terraform destroy    # remove everything when finished
 ## Cost
 
 Each lab README notes what it deploys. Lab 01 creates only a resource group, which has no cost. Always run `terraform destroy` when you finish a lab to avoid charges.
-
-## Practices followed
-- State files and variable files are never committed (see `.gitignore`)
-- No subscription IDs or secrets in code; credentials come from the Azure CLI session
-- Provider versions pinned for repeatable builds
-- Every change reviewed with `terraform plan` before `apply`
-- All lab resources destroyed after use to control cost
