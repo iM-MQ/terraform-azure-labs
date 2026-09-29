@@ -1,0 +1,20 @@
+# Terraform working folders
+.terraform/
+
+# State files: can contain sensitive data, never commit
+*.tfstate
+*.tfstate.*
+
+# Variable files: may contain secrets
+*.tfvars
+*.tfvars.json
+
+# Crash logs and local overrides
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
