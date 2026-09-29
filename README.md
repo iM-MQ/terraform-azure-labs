@@ -4,11 +4,11 @@ Hands-on labs learning **Terraform** by building real **Azure** infrastructure a
 
 | Lab | Topic | Status |
 |---|---|---|
-| [01](lab-01-resource-group) | Resource group and the Terraform workflow (init, plan, apply, destroy, drift) | ? Complete |
-| 02 | Virtual network, subnets and network security groups | ? Planned |
-| 03 | Variables, outputs and reusable modules | ? Planned |
-| 04 | Remote state in Azure Storage | ? Planned |
-| 05 | Capstone: deploy the [IT Asset Register](https://github.com/iM-MQ/docker-asset-register) to Azure | ? Planned |
+| [01](lab-01-resource-group) | Resource group and the Terraform workflow (init, plan, apply, destroy, drift) | Complete |
+| 02 | Virtual network, subnets and network security groups | Planned |
+| 03 | Variables, outputs and reusable modules | Planned |
+| 04 | Remote state in Azure Storage | Planned |
+| 05 | Capstone: deploy the [IT Asset Register](https://github.com/iM-MQ/docker-asset-register) to Azure | Planned |
 
 ## Practices followed
 - State files and variable files are never committed (see `.gitignore`)
