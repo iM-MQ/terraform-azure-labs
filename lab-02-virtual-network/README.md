@@ -12,6 +12,8 @@
 
 In this lab I built a small network laid out the way I would expect to see a real environment: a web tier that accepts HTTPS from the internet, and an app tier that only accepts traffic from the web tier. Coming from a networking background (CCNA, VLANs, ACLs), I wanted to see how the same segmentation ideas translate into Azure and into code.
 
+Below I have written up every step I took, the commands I ran and what I saw, so anyone can follow the same process.
+
 ## Architecture
 
 ```
@@ -23,25 +25,18 @@ Resource group: rg-tflab02-uks
 
 ---
 
-## How to use this guide
+## Following along?
 
-- **Where to run commands:** every command is run in **Windows PowerShell**. To open it, click **Start**, type `PowerShell` and select **Windows PowerShell**.
-- **One line at a time:** each command is in its own box. Copy **one line**, paste it into PowerShell, press **Enter**, and wait for it to finish before running the next.
-- **Fill in the blanks:** anything shown in `<angle brackets>` must be replaced with your own value, **including removing the brackets**. For example, `<your-folder-path>` becomes `C:\terraform-labs`.
-- **Expected output:** boxes labelled **Expected output** show what you should see. They are **not** commands to run.
-- **Terraform code** (shown in `hcl` boxes) goes **inside `.tf` files**, not into PowerShell.
-- **Typing `yes`:** when Terraform asks `Enter a value:`, type the full word `yes` and press **Enter**. Anything else cancels.
+If you want to repeat this lab yourself, a few pointers:
 
-## Before you start
+- I ran every command in **Windows PowerShell** (Start, type `PowerShell`, select **Windows PowerShell**).
+- Each command is in its own box. Run **one line at a time**, pressing **Enter** after each, and let it finish before running the next.
+- Anything in `<angle brackets>` needs replacing with your own value, **brackets included**. For example, `<your-folder-path>` becomes `C:\terraform-labs`.
+- Boxes marked **What I saw** show my output, so you can compare. They are not commands to run.
+- Code in `hcl` boxes is Terraform code. It goes **inside the `.tf` files**, not into PowerShell.
+- When Terraform asks `Enter a value:`, type the full word `yes` and press **Enter**. Anything else cancels.
 
-You will need the tools listed in the [main README prerequisites](../README.md#prerequisites):
-
-- An Azure subscription
-- Terraform (1.9 or later)
-- Azure CLI
-- A text editor (Notepad is fine; VS Code is better)
-
-If you have not completed [Lab 01](../lab-01-resource-group), it is worth doing first, as it explains the basic Terraform workflow used here.
+You will need the tools listed in the [main README prerequisites](../README.md#prerequisites). If you are new to Terraform, [Lab 01](../lab-01-resource-group) covers the basic workflow used here.
 
 ---
 
@@ -55,7 +50,7 @@ If you have not completed [Lab 01](../lab-01-resource-group), it is worth doing 
 | `outputs.tf` | A summary of the network after it is built |
 | `.terraform.lock.hcl` | Created automatically by `terraform init`. Records the exact provider version used |
 
-## What was new in this lab
+## What was new compared with Lab 01
 
 **Variable types.** Lab 01 only used strings. Here I used:
 - `list(string)` for the VNet address space, because Azure expects a list even when there is only one range.
@@ -74,51 +69,45 @@ Terraform reads these references and works out the build order itself. I never h
 
 ---
 
-## Walkthrough
+## How I built it
 
-### Step 1: Go to your labs folder
+### Step 1: Created the lab folder
 
-Open **Windows PowerShell**, then run:
+I opened Windows PowerShell and moved into my labs folder:
 
 ```powershell
 cd C:\terraform-labs
 ```
 
-**What it does:** moves PowerShell into the folder that holds all the labs.
+> If your labs folder is somewhere else, use `cd <your-folder-path>`.
 
-> If your labs folder is somewhere else, use `cd <your-folder-path>` instead, replacing `<your-folder-path>` with the full path to your folder.
-
-### Step 2: Create the lab folder
-
-Run each line separately:
+I then created a folder for this lab:
 
 ```powershell
 mkdir lab-02-virtual-network
 ```
 
-**What it does:** creates a new folder for this lab.
+And moved into it, so the prompt ended in `\lab-02-virtual-network>`:
 
 ```powershell
 cd lab-02-virtual-network
 ```
 
-**What it does:** moves into the new folder. Your prompt should now end in `\lab-02-virtual-network>`.
+### Step 2: Reused the provider file from Lab 01
 
-### Step 3: Copy the provider file from Lab 01
+Every lab uses the same provider settings, so rather than write the file again I copied it across:
 
 ```powershell
 Copy-Item ..\lab-01-resource-group\providers.tf .
 ```
 
-**What it does:** copies `providers.tf` from the Lab 01 folder into this one. `..` means "the folder above this one", and the final `.` means "into this folder". Every lab uses the same provider settings, so there is no need to write it again.
-
-Check it copied:
+`..` means "the folder above this one", and the final `.` means "into this folder". I checked it had copied:
 
 ```powershell
 Get-Content providers.tf
 ```
 
-**Expected output:**
+**What I saw:**
 
 ```
 terraform {
@@ -137,17 +126,17 @@ provider "azurerm" {
 }
 ```
 
-> **Skipped Lab 01?** Create the file yourself instead: run `notepad providers.tf`, click **Yes** to create it, paste the code from the expected output above, then save and close.
+> If you skipped Lab 01, create this file yourself: run `notepad providers.tf`, click **Yes** to create it, paste in the code above, then save and close.
 
-### Step 4: Create `variables.tf`
+### Step 3: Wrote the variables file
+
+I created `variables.tf`:
 
 ```powershell
 notepad variables.tf
 ```
 
-**What it does:** opens Notepad with a new file called `variables.tf`. Click **Yes** when asked to create it.
-
-Paste in the following code, then **save** (Ctrl + S) and **close** Notepad:
+Notepad asked whether to create the file, so I clicked **Yes**, pasted in the following, saved and closed it:
 
 ```hcl
 variable "location" {
@@ -187,20 +176,24 @@ variable "tags" {
     environment = "lab"
     project     = "terraform-azure-labs"
     managed_by  = "terraform"
-    owner       = "<your-name>"
+    owner       = "iM-MQ"
   }
 }
 ```
 
-> Replace `<your-name>` with your own name or username, for example `owner = "iM-MQ"`.
+> Following along? Change `owner = "iM-MQ"` to your own name or username.
 
-### Step 5: Create `main.tf`
+For the IP plan I used a `/16` for the VNet and carved it into `/24` subnets, the same approach I would take when subnetting on-premises.
+
+### Step 4: Wrote the main configuration
+
+I created `main.tf`:
 
 ```powershell
 notepad main.tf
 ```
 
-Click **Yes** to create the file, paste in the following, then save and close:
+I clicked **Yes**, pasted in the following, saved and closed it:
 
 ```hcl
 # Resource group
@@ -262,15 +255,17 @@ resource "azurerm_subnet_network_security_group_association" "web" {
 }
 ```
 
-> The file in this repo also includes `nsg-app`, which is added later in [Test 1](#test-1-locking-down-the-app-tier). If you are following along from scratch, start with the code above and add `nsg-app` when you reach Test 1.
+I started with the web tier only. The app tier NSG (`nsg-app`) was added later in [Test 1](#test-1-locking-down-the-app-tier), which is why the finished `main.tf` in this repo is longer.
 
-### Step 6: Create `outputs.tf`
+### Step 5: Wrote the outputs file
+
+I created `outputs.tf` so Terraform would print a summary of the network after building it:
 
 ```powershell
 notepad outputs.tf
 ```
 
-Click **Yes**, paste in the following, then save and close:
+I clicked **Yes**, pasted in the following, saved and closed it:
 
 ```hcl
 output "resource_group_name" {
@@ -302,13 +297,13 @@ output "web_nsg_name" {
 }
 ```
 
-### Step 7: Check all four files are there
+### Step 6: Checked all four files were there
 
 ```powershell
 dir
 ```
 
-**Expected output** (dates and sizes will differ):
+**What I saw:**
 
 ```
 Mode    Name
@@ -319,53 +314,51 @@ Mode    Name
 -a----  variables.tf
 ```
 
-> If a file shows as `main.tf.txt`, Notepad has added `.txt`. Rename it with `Rename-Item main.tf.txt main.tf`.
+> If a file shows as `main.tf.txt`, Notepad has added `.txt` to the name. Fix it with `Rename-Item main.tf.txt main.tf`.
 
-### Step 8: Sign in to Azure
+### Step 7: Signed in to Azure
 
 ```powershell
 az login
 ```
 
-**What it does:** opens a browser window to sign in to Azure. If you are asked to choose a subscription, type its number and press **Enter**, or just press **Enter** to keep the default.
+This opened a browser to sign in. I only have one subscription, so when asked to choose I pressed **Enter** to keep the default. I then confirmed the subscription was active:
 
 ```powershell
 az account show --output table
 ```
 
-**What it does:** shows which subscription you are signed in to. Check that **State** says `Enabled`.
+**State** showed `Enabled`.
 
-### Step 9: Tell Terraform which subscription to use
+### Step 8: Told Terraform which subscription to use
 
 ```powershell
 $env:ARM_SUBSCRIPTION_ID = az account show --query id -o tsv
 ```
 
-**What it does:** stores your subscription ID in a temporary setting that Terraform reads. It keeps the ID out of your code and out of GitHub. **This line prints nothing when it works.**
-
-Check it worked:
+This stores the subscription ID in a temporary setting that Terraform reads, which keeps it out of the code and out of GitHub. It prints nothing when it works, so I checked it:
 
 ```powershell
 if ($env:ARM_SUBSCRIPTION_ID) { "Subscription ID is set" } else { "NOT set" }
 ```
 
-**Expected output:**
+**What I saw:**
 
 ```
 Subscription ID is set
 ```
 
-> This setting is lost when you close PowerShell. Run the `$env:ARM_SUBSCRIPTION_ID` line again every time you open a new PowerShell window.
+> This setting is lost when PowerShell is closed, so the `$env:ARM_SUBSCRIPTION_ID` line needs running again in every new window.
 
-### Step 10: Initialise Terraform
+### Step 9: Initialised Terraform
 
 ```powershell
 terraform init
 ```
 
-**What it does:** downloads the Azure provider (plugin) into a hidden `.terraform` folder and creates `.terraform.lock.hcl`. Every lab folder is a separate project, so each one needs its own `init`.
+Each lab folder is a separate Terraform project, so it needs its own `init`. This downloaded the Azure provider and created the `.terraform.lock.hcl` file.
 
-**Expected output** (the version number may be newer):
+**What I saw:**
 
 ```
 - Installing hashicorp/azurerm v4.81.0...
@@ -374,35 +367,35 @@ terraform init
 Terraform has been successfully initialized!
 ```
 
-### Step 11: Tidy and check the code
+It installed v4.81.0, the latest release allowed by the `~> 4.0` constraint.
+
+### Step 10: Tidied and checked the code
 
 ```powershell
 terraform fmt
 ```
 
-**What it does:** tidies the spacing in your files. It prints the names of any files it changed, or nothing if they were already tidy. Both are fine.
+This tidies the spacing. It printed nothing, meaning the files were already tidy.
 
 ```powershell
 terraform validate
 ```
 
-**What it does:** checks the code for mistakes, without connecting to Azure.
+This checks the code for mistakes without connecting to Azure.
 
-**Expected output:**
+**What I saw:**
 
 ```
 Success! The configuration is valid.
 ```
 
-### Step 12: Preview the changes
+### Step 11: Previewed the changes
 
 ```powershell
 terraform plan
 ```
 
-**What it does:** connects to Azure and shows exactly what would be created, without creating anything.
-
-**Expected output** (end of the plan):
+**What I saw** (end of the plan):
 
 ```
 Plan: 6 to add, 0 to change, 0 to destroy.
@@ -417,17 +410,17 @@ Changes to Outputs:
   + web_nsg_name        = "nsg-web"
 ```
 
-The plan lists resources alphabetically, not in the order they will be built.
+One thing I noticed: the plan lists resources alphabetically, not in the order they will be built.
 
-### Step 13: Build it
+### Step 12: Built the network
 
 ```powershell
 terraform apply
 ```
 
-**What it does:** shows the plan again, then asks for confirmation. Type `yes` and press **Enter**.
+Terraform showed the plan again and asked for confirmation, so I typed `yes` and pressed **Enter**.
 
-The real build order only shows during the apply:
+Watching the output, I could see the real build order:
 
 | Order | Resource | Why |
 |---|---|---|
@@ -438,23 +431,21 @@ The real build order only shows during the apply:
 
 The subnet and association steps took around 40 seconds, as Azure processes changes to subnets in the same VNet one at a time.
 
-**Expected output:**
+**What I saw:**
 
 ```
 Apply complete! Resources: 6 added, 0 changed, 0 destroyed.
 ```
 
-### Step 14: Check the network in Azure
+### Step 13: Checked the network in Azure
 
-List the subnets and their NSGs:
+I listed the subnets and any NSGs attached to them:
 
 ```powershell
 az network vnet subnet list --resource-group rg-tflab02-uks --vnet-name vnet-tflab02-uks --query "[].{Name:name, Range:addressPrefix, NSG:networkSecurityGroup.id}" --output table
 ```
 
-**What it does:** shows each subnet, its address range and the ID of any NSG attached.
-
-**Expected output** (IDs shortened):
+**What I saw** (IDs shortened):
 
 ```
 Name      Range         NSG
@@ -463,15 +454,13 @@ snet-app  10.10.2.0/24
 snet-web  10.10.1.0/24  /subscriptions/<subscription-id>/.../nsg-web
 ```
 
-`snet-app` has no NSG yet. This is fixed in Test 1.
+`nsg-web` was attached to `snet-web`, and `snet-app` had no NSG.
 
-List all the rules on `nsg-web`, including the Azure defaults:
+I then listed every rule on `nsg-web`, including the defaults Azure adds to every NSG:
 
 ```powershell
 az network nsg rule list --resource-group rg-tflab02-uks --nsg-name nsg-web --include-default --output table
 ```
-
-**What it does:** shows your rules plus the default rules Azure adds to every NSG.
 
 | Priority | Rule | Effect |
 |---|---|---|
@@ -480,23 +469,23 @@ az network nsg rule list --resource-group rg-tflab02-uks --nsg-name nsg-web --in
 | 65001 | AllowAzureLoadBalancerInBound | Azure health probes |
 | 65500 | DenyAllInBound | Everything else blocked, like the implicit deny at the end of an ACL |
 
-The `AllowVnetInBound` default was the key finding. It meant `snet-app` was wide open to anything in the VNet.
+`AllowVnetInBound` was the key finding. It meant `snet-app` was wide open to anything in the VNet, which led to Test 1.
 
 ---
 
-## Tests carried out
+## Tests I carried out
 
 ### Test 1: Locking down the app tier
 
 **Goal:** only allow the web tier to reach the app tier, on TCP 8080.
 
-**1.** Open `main.tf`:
+I opened `main.tf` again:
 
 ```powershell
 notepad main.tf
 ```
 
-**2.** Scroll to the **very bottom** of the file, add the following code, then save and close:
+I added the following to the **very bottom** of the file, then saved and closed it:
 
 ```hcl
 # Network security group for the app tier: only the web tier can reach it
@@ -545,13 +534,13 @@ resource "azurerm_subnet_network_security_group_association" "app" {
 
 The deny rule at 4000 overrides the Azure default `AllowVnetInBound` at 65000, because lower priority numbers are processed first.
 
-**3.** Preview the change:
+I previewed the change:
 
 ```powershell
 terraform plan
 ```
 
-**Expected output:**
+**What I saw:**
 
 ```
 Plan: 2 to add, 0 to change, 0 to destroy.
@@ -559,35 +548,33 @@ Plan: 2 to add, 0 to change, 0 to destroy.
 
 The existing six resources were untouched. In the plan, the association already showed the real `subnet_id`, because the subnet existed, but the NSG ID was `(known after apply)`, so Terraform knew to create the NSG first.
 
-**4.** Apply it:
+I applied it, typing `yes` when asked:
 
 ```powershell
 terraform apply
 ```
 
-Type `yes` and press **Enter**.
-
-**5.** Check both subnets now have an NSG:
+Then I checked both subnets had an NSG:
 
 ```powershell
 az network vnet subnet list --resource-group rg-tflab02-uks --vnet-name vnet-tflab02-uks --query "[].{Name:name, Range:addressPrefix, NSG:networkSecurityGroup.id}" --output table
 ```
 
-**Expected output:** `snet-web` shows an ID ending in `nsg-web`, and `snet-app` shows an ID ending in `nsg-app`.
+**What I saw:** `snet-web` showed an ID ending in `nsg-web`, and `snet-app` showed an ID ending in `nsg-app`.
 
 ### Test 2: Security drift (RDP opened manually)
 
-**Goal:** simulate someone opening RDP to the internet in a hurry and forgetting to close it, then see Terraform catch it.
+**Goal:** simulate someone opening RDP to the internet in a hurry and forgetting to close it, then see whether Terraform catches it.
 
-> There are no VMs in this lab, so this rule does not expose anything. It is safe for testing.
+> There were no VMs in this lab, so the rule did not expose anything.
 
-**1.** Add the rule by hand in the Azure portal:
+I added the rule by hand in the Azure portal:
 
-1. Go to [portal.azure.com](https://portal.azure.com) and sign in.
-2. Search for **Resource groups** and open **rg-tflab02-uks**.
-3. Click **nsg-web**.
-4. In the left menu, click **Settings**, then **Inbound security rules**.
-5. Click **+ Add** and fill in:
+1. Went to [portal.azure.com](https://portal.azure.com) and signed in.
+2. Searched for **Resource groups** and opened **rg-tflab02-uks**.
+3. Clicked **nsg-web**.
+4. In the left menu, clicked **Settings**, then **Inbound security rules**.
+5. Clicked **+ Add** and filled in:
    - **Source:** `Any`
    - **Source port ranges:** `*`
    - **Destination:** `Any`
@@ -595,15 +582,15 @@ az network vnet subnet list --resource-group rg-tflab02-uks --vnet-name vnet-tfl
    - **Action:** `Allow`
    - **Priority:** `110`
    - **Name:** `Allow-RDP-Manual`
-6. Click **Add**. Azure shows a warning about exposing RDP; continue.
+6. Clicked **Add**. Azure warned about exposing RDP, and I continued.
 
-**2.** Back in PowerShell, check for drift:
+Back in PowerShell, I checked for drift:
 
 ```powershell
 terraform plan
 ```
 
-**Expected output** (shortened):
+**What I saw** (shortened):
 
 ```
   ~ resource "azurerm_network_security_group" "web" {
@@ -624,21 +611,19 @@ Terraform found the manual rule and planned to remove it, because it is not in t
 
 The plan also showed my HTTPS rule being removed and added back with identical values. This initially looked concerning, but it is because the rules are defined as one list inside the NSG resource, so Terraform rewrites the whole list when anything in it changes. Comparing the `-` and `+` blocks confirmed nothing was actually changing for that rule. The only real change was the RDP rule being removed.
 
-**3.** Correct the drift:
+I applied the plan, typing `yes` when asked:
 
 ```powershell
 terraform apply
 ```
 
-Type `yes` and press **Enter**.
-
-**4.** Confirm the RDP rule has gone:
+Then I confirmed the RDP rule had gone:
 
 ```powershell
 az network nsg rule list --resource-group rg-tflab02-uks --nsg-name nsg-web --output table
 ```
 
-**Expected output:** only `Allow-HTTPS-Inbound` is listed.
+**What I saw:**
 
 ```
 Name                 Priority    Access    Protocol    Direction    DestinationPortRanges
@@ -651,15 +636,13 @@ The RDP rule was removed within two seconds. In a production setting, running `t
 
 ## Clean up
 
-**Always destroy lab resources when you finish.**
+Once I had finished testing, I destroyed everything, typing `yes` when asked:
 
 ```powershell
 terraform destroy
 ```
 
-**What it does:** removes everything this lab created. It shows what will be destroyed and asks for confirmation. Type `yes` and press **Enter**.
-
-**Expected output:**
+**What I saw:**
 
 ```
 Destroy complete! Resources: 8 destroyed.
@@ -667,13 +650,13 @@ Destroy complete! Resources: 8 destroyed.
 
 The destroy ran in reverse order: NSG associations first (a subnet or NSG cannot be deleted while linked), then the subnets and NSGs, then the VNet, and the resource group last.
 
-Confirm it has gone:
+I confirmed the resource group had gone:
 
 ```powershell
 az group list --output table
 ```
 
-**Expected output:** `rg-tflab02-uks` is **not** in the list.
+`rg-tflab02-uks` was no longer listed.
 
 ---
 
@@ -699,14 +682,13 @@ az group list --output table
 | `az network nsg rule list ... --include-default` | Lists custom and Azure default NSG rules |
 | `az group list --output table` | Lists all resource groups |
 
-## Troubleshooting (issues I hit)
+## Issues I hit and how I fixed them
 
 | Problem | Cause | Fix |
 |---|---|---|
 | `The term 'resource_group_name' is not recognized` in PowerShell | I pasted a line of Terraform code into PowerShell by mistake | Terraform code goes in `.tf` files, not the terminal. No harm done |
-| Terraform could not authenticate after signing in to Azure again | The `ARM_SUBSCRIPTION_ID` setting is lost when the session changes | Run `$env:ARM_SUBSCRIPTION_ID = az account show --query id -o tsv` again |
-| Signing in with `az login` added my Microsoft account to Windows | Newer Azure CLI versions use the Windows sign-in broker by default | Run `az config set core.enable_broker_on_windows=false`, then `az login` again for a browser-only sign-in |
-| A file shows as `main.tf.txt` | Notepad added `.txt` to the name | `Rename-Item main.tf.txt main.tf` |
+| Terraform could not authenticate after I signed in to Azure again | The `ARM_SUBSCRIPTION_ID` setting is lost when the session changes | Ran `$env:ARM_SUBSCRIPTION_ID = az account show --query id -o tsv` again |
+| Signing in with `az login` added my Microsoft account to Windows | Newer Azure CLI versions use the Windows sign-in broker by default | Ran `az config set core.enable_broker_on_windows=false`, then `az login` again for a browser-only sign-in |
 
 ## What I learned
 
