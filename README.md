@@ -8,7 +8,7 @@ Hands-on labs learning **Terraform** by building real **Azure** infrastructure a
 |---|---|---|
 | [01](lab-01-resource-group) | Resource group and the Terraform workflow (init, plan, apply, destroy, drift) | Complete ✅ |
 | [02](lab-02-virtual-network) | Virtual network, subnets and NSGs, with tier segmentation and drift detection | Complete ✅ |
-| 03 | Variables, outputs and reusable modules | Planned ⏳ |
+| [03](lab-03-modules) | Reusable modules, input validation and multiple environments from one codebase | Complete ✅ |
 | 04 | Remote state in Azure Storage | Planned ⏳ |
 | 05 | Capstone: deploy the [IT Asset Register](https://github.com/iM-MQ/docker-asset-register) to Azure | Planned ⏳ |
 
@@ -123,4 +123,4 @@ terraform destroy    # remove everything when finished
 
 ## Cost
 
-Each lab README notes what it deploys. Labs 01 and 02 use only free resources (resource groups, virtual networks, subnets and NSGs). Always run `terraform destroy` when you finish a lab to avoid charges.
+Each lab README notes what it deploys. Labs 01 to 03 use only free resources (resource groups, virtual networks, subnets and NSGs). Always run `terraform destroy` when you finish a lab to avoid charges.
