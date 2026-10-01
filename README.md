@@ -10,7 +10,7 @@ Hands-on labs learning **Terraform** by building real **Azure** infrastructure a
 | [02](lab-02-virtual-network) | Virtual network, subnets and NSGs, with tier segmentation and drift detection | Complete ✅ |
 | [03](lab-03-modules) | Reusable modules, input validation and multiple environments from one codebase | Complete ✅ |
 | [04](lab-04-remote-state) | Remote state in Azure Storage, with state migration, locking and versioning | Complete ✅ |
-| 05 | Capstone: deploy the [IT Asset Register](https://github.com/iM-MQ/docker-asset-register) to Azure | Planned ⏳ |
+| [05](lab-05-capstone) | Capstone: the [IT Asset Register](https://github.com/iM-MQ/docker-asset-register) running in Azure Container Apps with managed PostgreSQL | Complete ✅ |
 
 ## What is Terraform?
 
@@ -123,4 +123,4 @@ terraform destroy    # remove everything when finished
 
 ## Cost
 
-Each lab README notes what it deploys. Labs 01 to 03 use only free resources (resource groups, virtual networks, subnets and NSGs). Lab 04 uses a small storage account, which costs very little while it exists. Always run `terraform destroy` when you finish a lab to avoid charges.
+Each lab README notes what it deploys. Labs 01 to 03 use only free resources (resource groups, virtual networks, subnets and NSGs). Lab 04 uses a small storage account, which costs very little while it exists. Lab 05 runs a PostgreSQL server and Container Apps, so it was destroyed as soon as testing finished. Always run `terraform destroy` when you finish a lab to avoid charges.
