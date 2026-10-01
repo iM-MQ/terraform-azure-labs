@@ -18,3 +18,7 @@ override.tf.json
 *_override.tf.json
 .terraformrc
 terraform.rc
+
+# Saved plan files: can contain secrets, never commit
+tfplan
+*.tfplan
