@@ -697,3 +697,27 @@ az group list --output table
 - The subscription ID is passed in as an environment variable rather than written into the code.
 - The code is the source of truth. Manual changes in the portal are detected as drift and reverted.
 - Resources should always be destroyed after a lab to control cost, which Terraform makes a single command.
+
+---
+
+## References
+
+Official documentation I used while building and testing this lab.
+
+| What I did | Documentation |
+|---|---|
+| Installed Terraform | [Install Terraform (HashiCorp)](https://developer.hashicorp.com/terraform/install) |
+| Installed the Azure CLI with `winget` | [Install the Azure CLI on Windows (Microsoft Learn)](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-windows) |
+| Signed in with `az login` and chose a subscription | [Sign in interactively using the Azure CLI (Microsoft Learn)](https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli-interactively) |
+| Let Terraform authenticate through my Azure CLI session | [Authenticate to Azure with a Microsoft account (Microsoft Learn)](https://learn.microsoft.com/en-us/azure/developer/terraform/authenticate-to-azure-with-microsoft-account) |
+| Declared the provider with `required_providers` | [Provider Requirements (HashiCorp)](https://developer.hashicorp.com/terraform/language/providers/requirements) |
+| Pinned the provider with `~> 4.0` | [Version Constraints (HashiCorp)](https://developer.hashicorp.com/terraform/language/expressions/version-constraints) |
+| Committed `.terraform.lock.hcl` | [Dependency Lock File (HashiCorp)](https://developer.hashicorp.com/terraform/language/files/dependency-lock) |
+| Wrote `variables.tf` | [variable block reference (HashiCorp)](https://developer.hashicorp.com/terraform/language/block/variable) |
+| Wrote `outputs.tf` | [output block reference (HashiCorp)](https://developer.hashicorp.com/terraform/language/block/output) |
+| Ran `terraform init` | [terraform init command reference (HashiCorp)](https://developer.hashicorp.com/terraform/cli/commands/init) |
+| Ran `terraform plan` and noted the `-out` option | [terraform plan command reference (HashiCorp)](https://developer.hashicorp.com/terraform/cli/commands/plan) |
+| Kept the state file out of Git | [Manage sensitive data in your configuration (HashiCorp)](https://developer.hashicorp.com/terraform/language/manage-sensitive-data) |
+| Tested drift detection | [Manage resource drift (HashiCorp tutorial)](https://developer.hashicorp.com/terraform/tutorials/state/resource-drift) |
+| Tagged the resource group | [Use tags to organize your Azure resources (Microsoft Learn)](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources) |
+| Set up a budget alert | [Tutorial: Create and manage budgets (Microsoft Learn)](https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-acm-create-budgets) |
