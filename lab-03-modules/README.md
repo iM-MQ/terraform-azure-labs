@@ -780,3 +780,24 @@ Running `init` when it is not needed is harmless, and Terraform tells you if you
 - Module outputs are how modules plug into each other. The subnet IDs from this module are what a VM or container would need to be placed in the network.
 - Resources inside modules have their own address in state (`module.network_dev...`), which keeps each use separate.
 - When a fix does not seem to work, check the change was actually saved. The file on disk is what Terraform reads, not what the editor shows.
+
+---
+
+## References
+
+Official documentation I used while building and testing this lab.
+
+| What I did | Documentation |
+|---|---|
+| Built a local module and called it from the root configuration | [Build and use a local module](https://developer.hashicorp.com/terraform/tutorials/modules/module-create) |
+| Used `module` blocks with local `./modules/...` sources | [module block reference](https://developer.hashicorp.com/terraform/language/block/module) |
+| Added validation rules to module inputs | [variable block reference](https://developer.hashicorp.com/terraform/language/block/variable) |
+| Validated CIDR ranges | [cidrnetmask function](https://developer.hashicorp.com/terraform/language/functions/cidrnetmask) |
+| Checked every subnet in a list passed validation | [alltrue function](https://developer.hashicorp.com/terraform/language/functions/alltrue) |
+| Merged default tags with extra tags | [merge function](https://developer.hashicorp.com/terraform/language/functions/merge) |
+| Built names and tags once using locals | [locals block reference](https://developer.hashicorp.com/terraform/language/block/locals) |
+| Built resource names with `${}` interpolation | [Strings and Templates](https://developer.hashicorp.com/terraform/language/expressions/strings) |
+| Re-ran init to install the new modules | [terraform init](https://developer.hashicorp.com/terraform/cli/commands/init) |
+| Formatted the module folders | [terraform fmt](https://developer.hashicorp.com/terraform/cli/commands/fmt) |
+| Listed resources by their module address | [terraform state list](https://developer.hashicorp.com/terraform/cli/commands/state/list) |
+| Checked the VNets in Azure | [az network vnet](https://learn.microsoft.com/en-us/cli/azure/network/vnet) |
