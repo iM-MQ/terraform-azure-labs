@@ -697,3 +697,21 @@ az group list --output table
 - A plan that looks alarming is not always dangerous. Reading the `-` and `+` blocks carefully showed the HTTPS rule was not really changing.
 - Drift detection is a practical security control. A risky manual change, like RDP open to the internet, is caught and reverted by the next plan and apply.
 - Using a map for tags and references between resources keeps the code short and means values only need changing in one place.
+
+---
+
+## References
+
+Official documentation I used while building and testing this lab.
+
+| What I did | Documentation |
+|---|---|
+| Planned the VNet and its subnets | [Azure Virtual Network concepts and best practices (Microsoft Learn)](https://learn.microsoft.com/en-us/azure/virtual-network/concepts-and-best-practices) |
+| Built NSGs, and worked out the default rules and priority order | [Azure network security groups overview (Microsoft Learn)](https://learn.microsoft.com/en-us/azure/virtual-network/network-security-groups-overview) |
+| Used the `Internet` and `VirtualNetwork` service tags | [Azure service tags overview (Microsoft Learn)](https://learn.microsoft.com/en-us/azure/virtual-network/service-tags-overview) |
+| Used `list(string)` and `map(string)` variables | [Type Constraints (HashiCorp)](https://developer.hashicorp.com/terraform/language/expressions/type-constraints) |
+| Relied on references to set the build order | [Create resource dependencies (HashiCorp tutorial)](https://developer.hashicorp.com/terraform/tutorials/configuration-language/dependencies) |
+| Checked subnets with `az network vnet subnet list` | [az network vnet subnet (Microsoft Learn)](https://learn.microsoft.com/en-us/cli/azure/network/vnet/subnet) |
+| Listed rules with `az network nsg rule list --include-default` | [az network nsg rule (Microsoft Learn)](https://learn.microsoft.com/en-us/cli/azure/network/nsg/rule) |
+| Detected and reverted the manual RDP rule | [Manage resource drift (HashiCorp tutorial)](https://developer.hashicorp.com/terraform/tutorials/state/resource-drift) |
+| Switched `az login` back to browser sign-in | [Sign in with Azure CLI: Web Account Manager on Windows (Microsoft Learn)](https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli-web-account-manager) |
