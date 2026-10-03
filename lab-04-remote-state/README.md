@@ -718,3 +718,19 @@ I did not need to run this in the lab, as the lock released normally.
 - Versioning and soft delete on the storage account act as backups for the state file.
 - Clean-up order matters when one project depends on another. The app had to be destroyed before the storage holding its state.
 - The bootstrap pattern solves the chicken-and-egg problem of needing somewhere to store state before that storage exists.
+
+---
+
+## References
+
+Official documentation I used while building and testing this lab.
+
+| What I did | Documentation |
+|---|---|
+| Stored Terraform state in an Azure Storage account and blob container | [Store Terraform state in Azure Storage](https://learn.microsoft.com/en-us/azure/terraform/terraform-backend) |
+| Configured the `backend "azurerm"` block | [Backend Type: azurerm](https://developer.hashicorp.com/terraform/language/backend/azurerm) |
+| Moved existing local state into the new backend | [Backend block configuration overview](https://developer.hashicorp.com/terraform/language/backend) |
+| Ran `terraform init -migrate-state` | [terraform init](https://developer.hashicorp.com/terraform/cli/commands/init) |
+| Tested state locking with two terminals | [State Locking](https://developer.hashicorp.com/terraform/language/state/locking) |
+| Cleared a stuck lock with its lock ID | [terraform force-unlock](https://developer.hashicorp.com/terraform/cli/commands/force-unlock) |
+| Enabled blob versioning to protect the state file | [Blob versioning in Azure Storage](https://learn.microsoft.com/azure/storage/blobs/versioning-overview) |
