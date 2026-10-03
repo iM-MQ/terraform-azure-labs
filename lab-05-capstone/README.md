@@ -762,3 +762,19 @@ I confirmed with `az group list --output table` that neither resource group rema
 - Azure applies defaults that the code may not describe: provider registration, availability zones and workload profiles. Each showed up as an error or an unexpected plan change, and reading the message or the plan properly was enough to find the cause.
 - When a plan shows a change I did not expect, I check what it is before applying, rather than assuming it is harmless.
 - Saved plans make sure what gets applied is exactly what was reviewed, but they contain secrets in readable form, so they must never be committed.
+
+---
+
+## References
+
+Official documentation I used while building, testing and debugging this lab.
+
+| What I did | Documentation |
+|---|---|
+| Registered the `Microsoft.App` resource provider after the first apply failed | [Azure resource providers and types](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-providers-and-types) |
+| Created the Container Apps environment and its Log Analytics workspace | [Azure Container Apps environments](https://learn.microsoft.com/azure/container-apps/environment) |
+| Set the `Consumption` workload profile on the environment and the app | [Workload profiles in Azure Container Apps](https://learn.microsoft.com/en-us/azure/container-apps/hardware) |
+| Exposed the app with external ingress and a target port | [Ingress in Azure Container Apps](https://learn.microsoft.com/azure/container-apps/ingress) |
+| Saved the plan with `-out=tfplan` and applied that exact plan | [terraform apply](https://developer.hashicorp.com/terraform/cli/commands/apply) |
+| Used `lifecycle { ignore_changes }` to stop drift on the zone Azure assigns | [lifecycle meta-argument](https://developer.hashicorp.com/terraform/language/meta-arguments/lifecycle) |
+| Added an explicit `depends_on` for a dependency Terraform couldn't infer | [depends_on reference](https://developer.hashicorp.com/terraform/language/meta-arguments/depends_on) |
