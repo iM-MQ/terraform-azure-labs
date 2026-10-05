@@ -83,9 +83,16 @@ For macOS or Linux, see the official install guides for [Terraform](https://deve
 > After installing, close and reopen your terminal so the new commands are recognised.
 
 ### Check everything is installed
+
 ```powershell
 terraform -version
+```
+
+```powershell
 az version
+```
+
+```powershell
 git --version
 ```
 
@@ -111,14 +118,40 @@ This keeps the subscription ID out of the code and out of source control.
 
 ## Running a lab
 
+Clone the repository:
+
 ```powershell
 git clone https://github.com/iM-MQ/terraform-azure-labs.git
-cd terraform-azure-labs/lab-01-resource-group
+```
 
-terraform init       # download the Azure provider
-terraform plan       # preview the changes
-terraform apply      # build it (type yes to confirm)
-terraform destroy    # remove everything when finished
+Move into a lab folder:
+
+```powershell
+cd terraform-azure-labs/lab-01-resource-group
+```
+
+Download the Azure provider:
+
+```powershell
+terraform init
+```
+
+Preview the changes:
+
+```powershell
+terraform plan
+```
+
+Build it (type `yes` to confirm):
+
+```powershell
+terraform apply
+```
+
+Remove everything when finished:
+
+```powershell
+terraform destroy
 ```
 
 ## Cost
