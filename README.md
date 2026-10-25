@@ -49,7 +49,7 @@ The same files can be run again and again and will produce the same result every
 
 ### What it can be used for
 
-- **Azure landing zones:** management groups, Azure Policy, RBAC and hub-and-spoke networking
+- **Azure landing zones:** management groups, Azure Policy, RBAC and hub-and-spoke networking (I built one in my [Azure Landing Zone](https://github.com/iM-MQ/azure-landing-zone) labs)
 - **Networking:** VNets, subnets, NSGs, VPN gateways, firewalls and DNS
 - **Compute:** virtual machines, Azure Virtual Desktop and scale sets
 - **Containers:** Azure Kubernetes Service (AKS) and Azure Container Registry
